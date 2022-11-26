@@ -1,7 +1,7 @@
 library(tidyverse)
-Sys.setlocale("LC_ALL","English")
-movies = read_csv("clean_data.csv") %>%
-    mutate(release_date = as.Date(release_date, format = "%B %d, %Y"))
+# Sys.setlocale("LC_ALL","English")
+# movies = read_csv("clean_data.csv") %>%
+#     mutate(release_date = as.Date(release_date, format = "%B %d, %Y"))
 
 load_ratings = function(need_ratings = FALSE) {
     if (need_ratings) {
@@ -32,6 +32,8 @@ get_rows = function(cols_to_filter, containing) {
     }
     return(new_movies)
 }
+
+get_rows(c("actors", "actors"), c("Arnold Schwarzenegger", "Sylvester Stallone"))
 
 # get_columns = function(columns) {
 #     if (("rating" %in% columns) & is.null(ratings)) {

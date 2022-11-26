@@ -11,6 +11,10 @@ movies = movies %>%
     ) %>%
     select(-X)
 
+# Fixing date format
+Sys.setlocale("LC_ALL","English")
+movies = movies %>%
+    mutate(release_date = as.Date(release_date, format = "%B %d, %Y"))
 # Writing file with clean data
 write.csv(movies, file = "clean_data.csv")
 
