@@ -1,4 +1,8 @@
 get_movie_rows = function(cols_to_filter, containing) {
+    if (is.null(cols_to_filter)){
+        # If nothing is filtered, output full file
+        return(movies)
+    }
     if (length(cols_to_filter) != length(containing)) {
         stop("Each column must have one condition")
     }

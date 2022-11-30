@@ -14,8 +14,19 @@ load_ratings = function(need_ratings = FALSE) {
 ratings = load_ratings(FALSE)
 
 
+get_right_data = function(
+    cols_to_filter = c("actors", "actor"), 
+    containing = c("Arnold", "Abner H"),
+    need_rating = FALSE
+) {
+    #STUFF 
+    print("hello")
+}
 
-test_actor = get_movie_rows(c("actors"), c("Arnold Schwarzenegger"))
+test_actor = get_movie_rows(
+    c("actors"), 
+    c("Arnold")
+)
 
 our_ratings_cmprsd = read_csv("our_ratings_cmprsd.csv")
 
@@ -43,7 +54,11 @@ decmprsd_ratings = test_rating %>%
     summarise(score = rep(rating, score_count), .groups = "drop") %>%
     mutate(imdb_id = as.factor(imdb_id))
 
-
+do_everyting = function(args){
+    abner_function()
+    plot = sihle_function()
+    return(plot)
+}
 
 # get_columns = function(columns) {
 #     if (("rating" %in% columns) & is.null(ratings)) {
@@ -57,3 +72,18 @@ decmprsd_ratings = test_rating %>%
 # get_data = function(columns, row_cond = NULL) {
 #     
 # }
+
+tmp = get_movie_rows(cols_to_filter = c("actors"),
+                   containing = c("Tom Hanks")
+    )
+
+movie_plot(movies, xcol = "release_date", ycol = "revenue")
+
+build_plot(
+    xcol = "budget", 
+    ycol = "revenue", 
+    cols_to_filter = c("director"),
+    containing = c("Martin Scorsese")
+)
+
+ggplot(data=movies, aes(x={{"release_date"}}, y={{"revenue"}})) + geom_point()
