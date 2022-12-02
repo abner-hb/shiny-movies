@@ -1,51 +1,89 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+source("R/get_movie_rows.R")
+source("R/movie_plot.R")
+source("R/build_plot.R")
 
-# Define UI for application that draws a histogram
+# Define UI for dataset viewer app ----
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
+    
+    # App title ----
+    titlePanel("Movie Plot"),
+    
+    # Sidebar layout with a input and output definitions ----
     sidebarLayout(
+        
+        # Sidebar panel for inputs ----
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            
+            # Input: x
+            selectInput("x",
+                        label = "Choose an x:",
+                        choices = c("budget", "revenue","duration")),
+            
+            # Input: y
+            selectInput("y",
+                        label = "choose a y:",
+                        choices = c("budget","revenue","duration")),
+            
+            # filter by actor
+            textInput("col", "Column to filter"),
+            
+            # filter by director
+            textInput("name", "Filter by Name"),
         ),
-
-        # Show a plot of the generated distribution
+        
         mainPanel(
-           plotOutput("distPlot")
+            
+            #function that decide plot type
+            plotOutput(outputId = "myPlot")
+            
         )
     )
 )
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+# Define server logic to summarize and view selected dataset ----
+server <- function(input, output, session) {
+    
+    
+    # Return the requested dataset ----
+    datasetInput <- reactive({
+        switch(input$x,
+               "budget" = clean_data$budget,
+               "revenue" = clean_data$revenue,
+               "duration" = clean_data$duration,)
     })
+    datasetInput <- reactive({
+        switch(input$y,
+               "budget" = clean_data$budget,
+               "revenue" = clean_data$revenue,
+               "duration" = clean_data$duration,)
+    })
+    
+    
+    # Generate a plot
+    output$myPlot <- renderPlot({
+        if(input$col!= ""){
+            a=input$col
+        }else{
+            a=NULL
+        }
+                 
+        if(input$name!= ""){
+            b=input$name
+        }else{
+            b=NULL
+        }
+       
+        
+        build_plot(
+            xcol = input$x,
+            ycol = input$y,
+            cols_to_filter = a,
+            containing = b
+        )
+    })
+    
 }
 
-# Run the application 
+# Create Shiny app ----
 shinyApp(ui = ui, server = server)
