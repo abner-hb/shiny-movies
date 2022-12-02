@@ -1,8 +1,9 @@
 library(shiny)
+library(tidyverse)
 movies = read_csv("clean_data.csv")
-source("R/get_movie_rows.R")
-source("R/movie_plot.R")
-source("R/build_plot.R")
+# source("R/get_movie_rows.R")
+# source("R/movie_plot.R")
+# source("R/build_plot.R")
 
 # Define UI for dataset viewer app ----
 ui <- fluidPage(
@@ -19,7 +20,7 @@ ui <- fluidPage(
             # Input: x
             selectInput("x",
                         label = "Choose an x:",
-                        choices = c("budget", "revenue","duration")),
+                        choices = c("release_date", "budget", "revenue", "duration")),
             
             # Input: y
             selectInput("y",
