@@ -24,14 +24,18 @@ ui <- fluidPage(
             
             # Input: y
             selectInput("y",
-                        label = "choose a y:",
+                        label = "Choose a y:",
                         choices = c("budget","revenue","duration")),
             
-            # filter by actor
-            textInput("col", "Column to filter"),
+            # Input: column
+            selectInput("col",
+                        label = "Column to filter:",
+                        choices = c("actors","director","main_country","production_companies","title")),
             
             # filter by director
-            textInput("name", "Filter by Name"),
+            textInput("name", "Filter by Name","Tom Hanks"),
+            
+            submitButton("Render Plot")
         ),
         
         mainPanel(
@@ -50,25 +54,28 @@ server <- function(input, output, session) {
     # Return the requested dataset ----
     datasetInput <- reactive({
         switch(input$x,
-               "budget" = clean_data$budget,
-               "revenue" = clean_data$revenue,
-               "duration" = clean_data$duration,)
+               "budget" = movies$budget,
+               "revenue" = movies$revenue,
+               "duration" = movies$duration,)
     })
     datasetInput <- reactive({
         switch(input$y,
-               "budget" = clean_data$budget,
-               "revenue" = clean_data$revenue,
-               "duration" = clean_data$duration,)
+               "budget" = movies$budget,
+               "revenue" = movies$revenue,
+               "duration" = movies$duration,)
+    })
+    datasetInput <- reactive({
+        switch(input$col,
+               "actors" = "actors",
+               "director" = "director",
+               "main_country" = movies$main_country,
+               "production_companies" = movies$production_companies,
+               "title" = "title")
     })
     
     
     # Generate a plot
     output$myPlot <- renderPlot({
-        if(input$col!= ""){
-            a=input$col
-        }else{
-            a=NULL
-        }
                  
         if(input$name!= ""){
             b=input$name
@@ -80,7 +87,7 @@ server <- function(input, output, session) {
         build_plot(
             xcol = input$x,
             ycol = input$y,
-            cols_to_filter = a,
+            cols_to_filter = input$col,
             containing = b
         )
     })
