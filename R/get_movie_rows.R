@@ -1,5 +1,5 @@
 get_movie_rows = function(cols_to_filter, containing) {
-    if (is.null(cols_to_filter)){
+    if (tolower(cols_to_filter) == "none"){
         # If nothing is filtered, output full file
         return(movies)
     }

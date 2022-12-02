@@ -30,7 +30,7 @@ ui <- fluidPage(
             # Input: column
             selectInput("col",
                         label = "Column to filter:",
-                        choices = c("actors","director","main_country","production_companies","title")),
+                        choices = c("None", "actors","director","main_country","production_companies","title")),
             
             # filter by director
             textInput("name", "Filter by Name","Tom Hanks"),
