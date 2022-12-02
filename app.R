@@ -1,4 +1,5 @@
 library(shiny)
+movies = read_csv("clean_data.csv")
 source("R/get_movie_rows.R")
 source("R/movie_plot.R")
 source("R/build_plot.R")
