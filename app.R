@@ -1,4 +1,5 @@
 library(shiny)
+library(RSQLite)
 library(tidyverse)
 movies = read_csv("clean_data.csv")
 # source("R/get_movie_rows.R")
