@@ -39,7 +39,8 @@ build_filter_mat = function(input_mat) {
                 tolower(fields) %in% 
                     c("budget", "revenue", "duration") ~ values,
                 TRUE ~ paste("%", values, "%", sep = "")
-            )
+            ), 
+            joiners = if_else(toupper(joiners) == "NONE", true = "", joiners)
         )
     return(filter_mat)
 }
