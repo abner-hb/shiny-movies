@@ -2,96 +2,76 @@ library(shiny)
 library(RSQLite)
 library(tidyverse)
 movies = read_csv("clean_data.csv")
-# source("R/get_movie_rows.R")
+source("R/get_movie_rows.R")
 # source("R/movie_plot.R")
 # source("R/build_plot.R")
 
 # Define UI for dataset viewer app ----
-ui <- fluidPage(
-    
-    # App title ----
-    titlePanel("Movie Plot"),
-    
-    # Sidebar layout with a input and output definitions ----
-    sidebarLayout(
-        
-        # Sidebar panel for inputs ----
-        sidebarPanel(
-            
-            # Input: x
-            selectInput("x",
-                        label = "Choose an x:",
-                        choices = c("release_date", "budget", "revenue", "duration")),
-            
-            # Input: y
-            selectInput("y",
-                        label = "Choose a y:",
-                        choices = c("budget","revenue","duration")),
-            
-            # Input: column
-            selectInput("col",
-                        label = "Column to filter:",
-                        choices = c("None", "actors","director","main_country","production_companies","title")),
-            
-            # filter by director
-            textInput("name", "Filter by Name","Tom Hanks"),
-            
-            submitButton("Render Plot")
+ui<-fluidPage(
+    titlePanel("Movie explorer"),
+    fluidRow(
+        column(3,
+               wellPanel(
+                   h4("Filter"),
+                   selectInput("fields",
+                               label = "fields:",
+                               choices = c("actors","director","budget")),
+                   selectInput("conditions",
+                               label = "Conditions:",
+                               choices = c("including","Not including")),
+                   textInput("values","values", value=1),
+                   selectInput("joiners",
+                               label = "Joiners",
+                               choices = c("AND","OR","NONE")),
+                   actionButton("do", "Click Me")
+                   
+               ),
+               
+               
+               wellPanel(
+                   selectInput("x",
+                               label = "Choose an x:",
+                               choices = c("release_date", "budget", "revenue", "duration")),
+                   selectInput("y",
+                               label = "Choose a y:",
+                               choices = c("budget","revenue","duration")),
+                   # submitButton("Render Plot"),
+                   
+               )
+               
         ),
         
-        mainPanel(
-            
-            #function that decide plot type
-            plotOutput(outputId = "myPlot")
-            
+        column(9,
+               plotOutput(outputId = "myPlot"),
+               tableOutput('table'),
+               
         )
+        
     )
 )
 
-# Define server logic to summarize and view selected dataset ----
+
 server <- function(input, output, session) {
+    v <- reactiveValues(data = data.frame(field=c(), condition=c(),
+                                          value=c(), joiner=c()))
     
-    
-    # Return the requested dataset ----
-    datasetInput <- reactive({
-        switch(input$x,
-               "budget" = movies$budget,
-               "revenue" = movies$revenue,
-               "duration" = movies$duration,)
+    observeEvent(input$do, {
+        df <- v$data
+        df2 <- data.frame(fields=input$fields, conditions=input$conditions, values=input$values,
+                          joiners=input$joiners)
+        v$data <- rbind(df, df2)
+        print(v$data)
     })
-    datasetInput <- reactive({
-        switch(input$y,
-               "budget" = movies$budget,
-               "revenue" = movies$revenue,
-               "duration" = movies$duration,)
-    })
-    datasetInput <- reactive({
-        switch(input$col,
-               "actors" = "actors",
-               "director" = "director",
-               "main_country" = movies$main_country,
-               "production_companies" = movies$production_companies,
-               "title" = "title")
-    })
-    
-    
-    # Generate a plot
-    output$myPlot <- renderPlot({
-                 
-        if(input$name!= ""){
-            b=input$name
-        }else{
-            b=NULL
-        }
-       
-        
-        build_plot(
-            xcol = input$x,
-            ycol = input$y,
-            cols_to_filter = input$col,
-            containing = b
-        )
-    })
+    output$table <- renderTable(v$data)
+    # # Generate a plot
+    # output$myPlot <- renderPlot({
+    #              
+    #      build_plot(
+    #         xcol = input$x,
+    #         ycol = input$y,
+    #         input_mat = v$data
+    #     )
+    # })
     
 }
 
