@@ -15,7 +15,7 @@ ui<-fluidPage(
                    h4("Filter"),
                    selectInput("fields",
                                label = "fields:",
-                               choices = c("actors","director","duration")),
+                               choices = c("actors","director","duration","budget")),
                    selectInput("conditions",
                                label = "Conditions:",
                                choices = c("Including","Not including",">=","<=")),
