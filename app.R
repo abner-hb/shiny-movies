@@ -15,15 +15,16 @@ ui<-fluidPage(
                    h4("Filter"),
                    selectInput("fields",
                                label = "fields:",
-                               choices = c("actors","director","budget")),
+                               choices = c("actors","director","duration")),
                    selectInput("conditions",
                                label = "Conditions:",
-                               choices = c("including","Not including")),
+                               choices = c("Including","Not including",">=","<=")),
                    textInput("values","values", value=1),
                    selectInput("joiners",
                                label = "Joiners",
                                choices = c("AND","OR","NONE")),
-                   actionButton("do", "Click Me")
+                   actionButton("do", "Click Me"),
+                   actionButton("clear", "Clear")
                    
                ),
                
@@ -35,14 +36,13 @@ ui<-fluidPage(
                    selectInput("y",
                                label = "Choose a y:",
                                choices = c("budget","revenue","duration")),
-                   # submitButton("Render Plot"),
                    
-               )
+               ),
                
         ),
         
         column(9,
-               plotOutput(outputId = "myPlot"),
+               plotOutput(outputId = "myplot"),
                tableOutput('table'),
                
         )
@@ -62,16 +62,19 @@ server <- function(input, output, session) {
         v$data <- rbind(df, df2)
         print(v$data)
     })
+    observeEvent(input$clear,{
+        v$data<-data.frame()
+    })
     output$table <- renderTable(v$data)
     # # Generate a plot
-    # output$myPlot <- renderPlot({
-    #              
-    #      build_plot(
-    #         xcol = input$x,
-    #         ycol = input$y,
-    #         input_mat = v$data
-    #     )
-    # })
+    output$myplot <- renderPlot({
+        
+        build_plot(
+            xcol = input$x,
+            ycol = input$y,
+            input_mat = v$data
+        )
+    })
     
 }
 
