@@ -39,7 +39,8 @@ build_filter_mat = function(input_mat) {
                 tolower(fields) %in% 
                     c("budget", "revenue", "duration") ~ values,
                 TRUE ~ paste("%", values, "%", sep = "")
-            )
+            ),
+            joiners = if_else(toupper(joiners) == "NONE", true = "", joiners)
         )
     return(filter_mat)
 }
@@ -61,6 +62,9 @@ get_qry_components = function(input_mat) {
 }
 
 get_movie_rows_sql = function(input_mat) {
+    if (nrow(input_mat) == 0) {
+        return(movies)
+    }
     qry_comps = get_qry_components(input_mat)
     vals_list = qry_comps$vals_list
     qry = qry_comps$qry
