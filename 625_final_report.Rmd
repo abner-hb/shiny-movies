@@ -3,9 +3,8 @@ title: "Biostat 625 Final Report"
 author: "Abner Heredia Bustos, Runshu Wang, Sihle Khanyile"
 date: "12/17/2022"
 output:
-  pdf_document: default
-  html_document: default
 ---
+\usepackage[utf8]{inputenc}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
